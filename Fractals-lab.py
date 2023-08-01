@@ -41,6 +41,7 @@ def processFractal(a):
     return a
 
 def Part2(device):
+    """This part is only for part 2 exercises"""
     # Use NumPy to create a 2D array of complex numbers on [-2,2]x[-2,2]
     Y, X = np.mgrid[-1.3:1.3:0.005, -2:1:0.005]
 
@@ -73,6 +74,6 @@ def Part2(device):
 
 def main():
     Part1(device)
-    #Part2(device)
+    Part2(device)
 
 if __name__ == '__main__': main()

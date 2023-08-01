@@ -1,3 +1,2 @@
 # Fractal-Lab
-test test
-fuck u
+Code for the Fractal lab work. Currently upto part 2
