@@ -23,7 +23,14 @@ def Part1(device):
 
     # Compute Gaussian
     z = torch.exp(-(x**2+y**2)/2.0)
-    sin = torch.sin(2*np.pi*(4*x + 4*y))
+
+    #2D sine function
+    f = 0.5
+    x_s = 4
+    y_s = 4
+    sin = torch.sin(f*np.pi*(x_s*x + y_s*y))
+
+    #Combination of sine and Guass
     Guass_Sin = z*sin
 
 
