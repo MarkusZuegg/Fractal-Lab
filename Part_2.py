@@ -89,7 +89,7 @@ def Gen_Julia_set(device, R, I, c_real, c_imag):
         #Have we diverged with this new value?
         not_diverged = torch.abs(zs_) < 4.0
         #Update variables to compute
-        ns += not_diverged.type(torch.FloatTensor)
+        ns += not_diverged.type(torch.FloatTensor) #Change torch.cuda. when using GPU 
         zs = zs_
     return ns
 
@@ -98,25 +98,29 @@ def main():
     #choose device for pytorch to use
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    #stepsize for grid
-    stepsize = 1000
-    #setup grid of real numbers
-    r_upper = 1
+    #Resultion for all
+    res = 1000
+
+    #Mandelbrot setup
+    r_upper = 1 # setup grid of real numbers
     r_lower = -2
-    #setup grid for imaginary numbers
-    i_upper = 1.3
+    i_upper = 1.3 # setup grid for imaginary numbers
     i_lower = -1.3
-
-    I_xy, R_xy = create_mgrid(i_lower, i_upper, r_lower, r_upper, stepsize)
-
+    I_xy, R_xy = create_mgrid(i_lower, i_upper, r_lower, r_upper, res)
     #create and draw fractal
     Mandelbrot = Gen_Mandelbrot(device, R_xy, I_xy)
     draw_fractal(Mandelbrot)
 
+    #Zooming in on mandlebrot
+
+    zoom_I, zoom_R = create_mgrid(-0.65, 0.65, -1, 0.5, res)
+    Mandle_zoom = Gen_Mandelbrot(device, zoom_R, zoom_I)
+    draw_fractal(Mandle_zoom)
+
+    #Julia set
     c_real = -0.744
     c_imag = 0.148
-
-    I, R = create_mgrid(-2,2,-2,2,1000)
+    I , R = create_mgrid(-2,2,-2,2,1000)
     julia = Gen_Julia_set(device, R,I, c_real, c_imag)
     draw_fractal(julia)
 
