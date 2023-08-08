@@ -14,9 +14,12 @@ def processFractal(a):
     a = np.uint8(np.clip(a, 0, 255))
     return a
 
-def create_mgrid(i_l, i_u, r_l, r_u, stepsize):
+def create_mgrid(i_l, i_u, r_l, r_u, res):
     """creates two 2D arrays given upper and lower limits"""
-    I, R = np.mgrid[i_l:i_u:stepsize, r_l:r_u:stepsize]
+    # modify to use linspace for accurate res
+    R_ = torch.linspace(r_l,r_u, res)
+    I_ = torch.linspace(i_l,i_u, res)
+    I, R = torch.meshgrid(I_, R_)
     return I, R
 
 def draw_fractal(array):
@@ -37,6 +40,7 @@ def Gen_Mandelbrot(device, R, I):
     z = torch.complex(xy_real, xy_imag) #combines both real, imaginary grids into complex number grid
     zs = z
     ns = torch.zeros_like(z)
+    print(z.shape)
 
     # transfer to the GPU device
     z = z.to(device)
@@ -95,7 +99,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     #stepsize for grid
-    stepsize = 0.003
+    stepsize = 1000
     #setup grid of real numbers
     r_upper = 1
     r_lower = -2
@@ -112,7 +116,7 @@ def main():
     c_real = -0.744
     c_imag = 0.148
 
-    I, R = create_mgrid(-2,2,-2,2,0.003)
+    I, R = create_mgrid(-2,2,-2,2,1000)
     julia = Gen_Julia_set(device, R,I, c_real, c_imag)
     draw_fractal(julia)
 
