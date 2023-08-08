@@ -35,7 +35,7 @@ def Part1(device):
 
 
     #plot
-    plt.imshow(Guass_Sin.numpy())
+    plt.imshow(Guass_Sin.cpu().numpy())
     plt.tight_layout()
     plt.show()
 
