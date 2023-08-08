@@ -111,7 +111,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     #Resultion for all
-    res = 1064
+    res = 1800
 
     #Mandelbrot setup
     r_upper = 1 # setup grid of real numbers
@@ -120,20 +120,23 @@ def main():
     i_lower = -1.3
     I_xy, R_xy = create_mgrid(i_lower, i_upper, r_lower, r_upper, res)
     #create and draw fractal
-    # Mandelbrot = Gen_Mandelbrot(device, R_xy, I_xy, 500)
-    # draw_fractal(Mandelbrot)
+    Mandelbrot = Gen_Mandelbrot(device, R_xy, I_xy, 500)
+    draw_fractal(Mandelbrot)
 
     #Zooming in on mandlebrot
 
-    zoom_I, zoom_R = Point_create_mgrid(-0.87591, 0.20464, 0.100, res) 
-    Mandle_zoom = Gen_Mandelbrot(device, zoom_R, zoom_I, 800)
+    p_real = -0.759856#-0.87591
+    p_imag = 0.125547#0.20464
+    width = 0.051
+    zoom_I, zoom_R = Point_create_mgrid(p_real, p_imag, width, res) 
+    Mandle_zoom = Gen_Mandelbrot(device, zoom_R, zoom_I, 700)
     draw_fractal(Mandle_zoom)
 
     #Julia set
-    # c_real = -0.744
-    # c_imag = 0.148
-    # I , R = create_mgrid(-2,2,-2,2,1000)
-    # julia = Gen_Julia_set(device, R,I, c_real, c_imag, 500)
-    # draw_fractal(julia)
+    c_real = -0.744
+    c_imag = 0.148
+    I , R = create_mgrid(-2,2,-2,2,1000)
+    julia = Gen_Julia_set(device, R,I, c_real, c_imag, 500)
+    draw_fractal(julia)
 
 if __name__ == '__main__': main()
