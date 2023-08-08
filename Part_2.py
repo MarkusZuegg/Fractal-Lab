@@ -28,7 +28,19 @@ def draw_fractal(array):
     plt.tight_layout(pad=0)
     plt.show()
 
-def Gen_Mandelbrot(device, R, I):
+def Point_create_mgrid(c_real, c_imag, width, res):
+    scale = width/2
+    r_l = c_real-scale
+    r_u = c_real+scale
+    i_l = c_imag-scale
+    i_u = c_imag+scale
+    R_ = torch.linspace(r_l,r_u, res)
+    I_ = torch.linspace(i_l,i_u, res)
+    I, R = torch.meshgrid(I_, R_)
+    return I, R
+
+
+def Gen_Mandelbrot(device, R, I, max_iterations):
     """This function generates a Mandelbrot set
     Given a 2D real number array and a 2D imaginary array of same size
     And returns a Torch array
@@ -49,17 +61,17 @@ def Gen_Mandelbrot(device, R, I):
 
 
     #Mandelbrot Set
-    for i in range(500):
+    for i in range(max_iterations):
         #Compute the new values of z: z^2 + x
         zs_ = zs*zs + z
         #Have we diverged with this new value?
         not_diverged = torch.abs(zs_) < 4.0
         #Update variables to compute
-        ns += not_diverged.type(torch.FloatTensor)
+        ns += not_diverged.type(torch.FloatTensor)#Change torch.cuda. when using GPU 
         zs = zs_
     return ns
 
-def Gen_Julia_set(device, R, I, c_real, c_imag):
+def Gen_Julia_set(device, R, I, c_real, c_imag, max_iterations):
     """This function generates a Julia set
     Given a 2D real number array and a 2D imaginary array of same size
     And a complex constant c (c_real + i*c_imag)
@@ -83,7 +95,7 @@ def Gen_Julia_set(device, R, I, c_real, c_imag):
     c = torch.complex(torch.tensor(c_real), torch.tensor(c_imag))
 
 
-    for i in range(500):
+    for i in range(max_iterations):
         #Compute the new values of z: z^2 + x
         zs_ = zs*zs + c
         #Have we diverged with this new value?
@@ -99,7 +111,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     #Resultion for all
-    res = 1000
+    res = 1064
 
     #Mandelbrot setup
     r_upper = 1 # setup grid of real numbers
@@ -108,20 +120,20 @@ def main():
     i_lower = -1.3
     I_xy, R_xy = create_mgrid(i_lower, i_upper, r_lower, r_upper, res)
     #create and draw fractal
-    Mandelbrot = Gen_Mandelbrot(device, R_xy, I_xy)
-    draw_fractal(Mandelbrot)
+    # Mandelbrot = Gen_Mandelbrot(device, R_xy, I_xy, 500)
+    # draw_fractal(Mandelbrot)
 
     #Zooming in on mandlebrot
 
-    zoom_I, zoom_R = create_mgrid(-0.65, 0.65, -1, 0.5, res)
-    Mandle_zoom = Gen_Mandelbrot(device, zoom_R, zoom_I)
+    zoom_I, zoom_R = Point_create_mgrid(-0.87591, 0.20464, 0.100, res) 
+    Mandle_zoom = Gen_Mandelbrot(device, zoom_R, zoom_I, 800)
     draw_fractal(Mandle_zoom)
 
     #Julia set
-    c_real = -0.744
-    c_imag = 0.148
-    I , R = create_mgrid(-2,2,-2,2,1000)
-    julia = Gen_Julia_set(device, R,I, c_real, c_imag)
-    draw_fractal(julia)
+    # c_real = -0.744
+    # c_imag = 0.148
+    # I , R = create_mgrid(-2,2,-2,2,1000)
+    # julia = Gen_Julia_set(device, R,I, c_real, c_imag, 500)
+    # draw_fractal(julia)
 
 if __name__ == '__main__': main()
