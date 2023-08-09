@@ -16,10 +16,9 @@ def processFractal(a):
 
 def create_mgrid(i_l, i_u, r_l, r_u, res):
     """creates two 2D arrays given upper and lower limits"""
-    # modify to use linspace for accurate res
     R_ = torch.linspace(r_l,r_u, res)
     I_ = torch.linspace(i_l,i_u, res)
-    I, R = torch.meshgrid(I_, R_)
+    I, R = torch.meshgrid(I_, R_) # creates tensors as output
     return I, R
 
 def draw_fractal(array):
@@ -36,7 +35,7 @@ def Point_create_mgrid(c_real, c_imag, width, res):
     i_u = c_imag+scale
     R_ = torch.linspace(r_l,r_u, res)
     I_ = torch.linspace(i_l,i_u, res)
-    I, R = torch.meshgrid(I_, R_)
+    I, R = torch.meshgrid(I_, R_) #creates tensors as output
     return I, R
 
 
@@ -45,20 +44,16 @@ def Gen_Mandelbrot(device, R, I, max_iterations):
     Given a 2D real number array and a 2D imaginary array of same size
     And returns a Torch array
     """
-
-    # load into PyTorch tensors
-    xy_real = torch.Tensor(R)
-    xy_imag = torch.Tensor(I)
-    z = torch.complex(xy_real, xy_imag) #combines both real, imaginary grids into complex number grid
-    zs = z
-    ns = torch.zeros_like(z)
-    print(z.shape)
+    z = torch.complex(R, I) #combines both real, imaginary grids into complex number grid
+    zs = z.clone()
+    ns = torch.zeros_like(z) 
+    not_diverged = torch.zeros_like(z)
 
     # transfer to the GPU device
     z = z.to(device)
     zs = zs.to(device)
     ns = ns.to(device)
-
+    not_diverged = not_diverged.to(device)
 
     #Mandelbrot Set
     for i in range(max_iterations):
@@ -78,22 +73,18 @@ def Gen_Julia_set(device, R, I, c_real, c_imag, max_iterations):
     And returns a Torch array
     """
 
-    # load into PyTorch tensors
-    xy_real = torch.Tensor(R)
-    xy_imag = torch.Tensor(I)
-    z = torch.complex(xy_real, xy_imag) #combines both real, imaginary grids into complex number grid
-    zs = z
+    z = torch.complex(R, I) #combines both real, imaginary grids into complex number grid
+    zs = z.clone()
     ns = torch.zeros_like(z)
-
-    print(z.shape)
+    not_diverged = torch.zeros_like(z)
+    c = torch.complex(torch.tensor(c_real), torch.tensor(c_imag))
 
     # transfer to the GPU device
     z = z.to(device)
     zs = zs.to(device)
     ns = ns.to(device)
-
-    c = torch.complex(torch.tensor(c_real), torch.tensor(c_imag))
-
+    not_diverged = not_diverged.to(device)
+    c = c.to(device)
 
     for i in range(max_iterations):
         #Compute the new values of z: z^2 + x
@@ -111,7 +102,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     #Resultion for all
-    res = 1800
+    res = 1000
 
     #Mandelbrot setup
     r_upper = 1 # setup grid of real numbers
@@ -124,7 +115,6 @@ def main():
     draw_fractal(Mandelbrot)
 
     #Zooming in on mandlebrot
-
     p_real = -0.759856#-0.87591
     p_imag = 0.125547#0.20464
     width = 0.051
@@ -135,7 +125,7 @@ def main():
     #Julia set
     c_real = -0.744
     c_imag = 0.148
-    I , R = create_mgrid(-2,2,-2,2,1000)
+    I , R = create_mgrid(-2,2,-2,2,res)
     julia = Gen_Julia_set(device, R,I, c_real, c_imag, 500)
     draw_fractal(julia)
 
