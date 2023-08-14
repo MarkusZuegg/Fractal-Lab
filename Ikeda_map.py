@@ -18,6 +18,8 @@ def plot_ikeda(x_total, y_total):
     #convert to arrays
     x_array = x_total.numpy()
     y_array = y_total.numpy()
+
+    #plot with matplotlib
     fig = plt.figure(figsize=(16,10))
     plt.plot(x_array, y_array, 'bo', markersize=0.01)
     plt.tight_layout(pad=0)
@@ -88,6 +90,6 @@ def main():
     #calculate and plot ikeda map
     x,y = inti_points(num_points, r)
     x_total, y_total = ikeda_map(u, x, y, max_iterations, device)
-    plot_ikeda(x_total, y_total, max_iterations, num_points)
+    plot_ikeda(x_total, y_total)
 
 if __name__ == '__main__': main()
