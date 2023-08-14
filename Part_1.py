@@ -28,7 +28,7 @@ def Part1(device):
     f = 0.5
     x_s = 4
     y_s = 4
-    sin = torch.sin(f*np.pi*(x_s*x + y_s*y))
+    sin = torch.sin(f*torch.pi*(x_s*x + y_s*y))
 
     #Combination of sine and Guass
     Guass_Sin = z*sin
