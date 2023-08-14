@@ -6,7 +6,7 @@ import torch
 import matplotlib.pyplot as plt
 import random
 
-def plot_ikeda(x_total, y_total, max_iterations, num_points):
+def plot_ikeda(x_total, y_total):
     """Plots the ikeda map to matplotlib
     x_total: tensor dim 0 of all x values
     y_total: tensor dim 0 of all y values
@@ -38,7 +38,11 @@ def inti_points(num_points, r):
     return list_x,list_y
 
 def ikeda_map(u, list_x, list_y, max_iterations, device):
-    """Creates 
+    """Creates two tensors with the resulting Ikeda map dynamic system
+    given u: decimal from 1.0 to 0,
+    list of x,y components of the initial points,
+    max_iterations: int, device: cpu or gpu (cuda)
+    returns tensors of all iterations x,y values
     """
     #setup variables
     x = torch.FloatTensor(list_x)
