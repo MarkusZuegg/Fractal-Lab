@@ -22,20 +22,20 @@ def create_mgrid(i_l, i_u, r_l, r_u, res):
     return I, R
 
 def draw_fractal(array):
+    """Draws Fractal to matplotlib"""
     fig = plt.figure(figsize=(16,10))
-    plt.imshow(processFractal(array.numpy()))
+    plt.imshow(processFractal(array.cpu().numpy()))
     plt.tight_layout(pad=0)
     plt.show()
 
 def Point_create_mgrid(c_real, c_imag, width, res):
+    """Creates meshgrid centred around given complex point"""
     scale = width/2
     r_l = c_real-scale
     r_u = c_real+scale
     i_l = c_imag-scale
     i_u = c_imag+scale
-    R_ = torch.linspace(r_l,r_u, res)
-    I_ = torch.linspace(i_l,i_u, res)
-    I, R = torch.meshgrid(I_, R_) #creates tensors as output
+    I, R = create_mgrid(i_l, i_u, r_l, r_u, res)
     return I, R
 
 
@@ -62,7 +62,7 @@ def Gen_Mandelbrot(device, R, I, max_iterations):
         #Have we diverged with this new value?
         not_diverged = torch.abs(zs_) < 4.0
         #Update variables to compute
-        ns += not_diverged.type(torch.FloatTensor)#Change torch.cuda. when using GPU 
+        ns += not_diverged
         zs = zs_
     return ns
 
@@ -92,7 +92,7 @@ def Gen_Julia_set(device, R, I, c_real, c_imag, max_iterations):
         #Have we diverged with this new value?
         not_diverged = torch.abs(zs_) < 4.0
         #Update variables to compute
-        ns += not_diverged.type(torch.FloatTensor) #Change torch.cuda. when using GPU 
+        ns += not_diverged
         zs = zs_
     return ns
 
