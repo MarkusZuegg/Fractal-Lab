@@ -21,7 +21,7 @@ def plot_ikeda(x_total, y_total):
 
     #plot with matplotlib
     fig = plt.figure(figsize=(16,10))
-    plt.plot(x_array, y_array, 'bo', markersize=0.01)
+    plt.plot(x_array, y_array, 'k.', markersize=0.01)
     plt.tight_layout(pad=0)
     plt.show()
 
@@ -82,7 +82,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     #Set up varibles
-    u = 0.95
+    u = 0.918
     r = 5
     max_iterations = 500
     num_points = 20000
